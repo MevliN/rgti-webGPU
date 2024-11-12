@@ -3,7 +3,7 @@ import { UpdateSystem } from 'engine/systems/UpdateSystem.js';
 
 import { GLTFLoader } from 'engine/loaders/GLTFLoader.js';
 import { UnlitRenderer } from 'engine/renderers/UnlitRenderer.js';
-import { FirstPersonController } from 'engine/controllers/FirstPersonController.js';
+import { CharacterController } from 'engine/controllers/CharacterController.js';
 
 import { Camera, Model } from 'engine/core.js';
 
@@ -22,10 +22,12 @@ const loader = new GLTFLoader();
 await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
-const camera = loader.loadNode('Camera');
-camera.addComponent(new FirstPersonController(camera, canvas));
-camera.isDynamic = true;
-camera.aabb = {
+const camera = loader.loadNode("Camera");
+
+const person = loader.loadNode("Person");
+person.addComponent(new CharacterController(person, canvas));
+person.isDynamic = true;
+person.aabb = {
     min: [-0.2, -0.2, -0.2],
     max: [0.2, 0.2, 0.2],
 };
@@ -36,6 +38,7 @@ loader.loadNode('palm stems').isStatic = true;
 loader.loadNode('plants').isStatic = true;
 loader.loadNode('rocks').isStatic = true;
 loader.loadNode('grass').isStatic = true;
+loader.loadNode('Plane').isStatic = true;
 
 const physics = new Physics(scene);
 scene.traverse(node => {
@@ -54,8 +57,15 @@ function update(time, dt) {
             component.update?.(time, dt);
         }
     });
-
+    
     physics.update(time, dt);
+
+    /* scene.children[0].components[0].translation[0] = scene.children[7].components[0].translation[0];
+	scene.children[0].components[0].translation[1] = scene.children[7].components[0].translation[1];
+	scene.children[0].components[0].translation[2] = scene.children[7].components[0].translation[2]; */
+
+    // console.log(scene.children[7].components[0])
+
 }
 
 function render() {
