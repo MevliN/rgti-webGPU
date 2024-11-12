@@ -4,6 +4,7 @@ import { UpdateSystem } from 'engine/systems/UpdateSystem.js';
 import { GLTFLoader } from 'engine/loaders/GLTFLoader.js';
 import { UnlitRenderer } from 'engine/renderers/UnlitRenderer.js';
 import { CharacterController } from 'engine/controllers/CharacterController.js';
+import { FirstPersonController } from 'engine/controllers/FirstPersonController.js';
 
 import { Camera, Model } from 'engine/core.js';
 
@@ -25,12 +26,15 @@ const scene = loader.loadScene(loader.defaultScene);
 const camera = loader.loadNode("Camera");
 
 const person = loader.loadNode("Person");
-person.addComponent(new CharacterController(person, canvas));
+//camera.addComponent(new FirstPersonController(camera, canvas));
 person.isDynamic = true;
+//camera.isDynamic = true;
 person.aabb = {
     min: [-0.2, -0.2, -0.2],
     max: [0.2, 0.2, 0.2],
 };
+
+person.addComponent(new CharacterController(person, canvas));
 
 loader.loadNode('terrain').isStatic = true;
 loader.loadNode('palm leaves').isStatic = true;
