@@ -24,6 +24,7 @@ await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
 const camera = loader.loadNode("Camera");
+scene.children[0].components[0].rotation[3] += 1;
 
 const person = loader.loadNode("Person");
 //camera.addComponent(new FirstPersonController(camera, canvas));
@@ -64,9 +65,10 @@ function update(time, dt) {
     
     physics.update(time, dt);
 
-    /* scene.children[0].components[0].translation[0] = scene.children[7].components[0].translation[0];
-	scene.children[0].components[0].translation[1] = scene.children[7].components[0].translation[1];
-	scene.children[0].components[0].translation[2] = scene.children[7].components[0].translation[2]; */
+
+    scene.children[0].components[0].translation[0] = scene.children[7].components[0].translation[0] + 5;
+	scene.children[0].components[0].translation[1] = scene.children[7].components[0].translation[1] + 15;
+	scene.children[0].components[0].translation[2] = scene.children[7].components[0].translation[2] + 30;
 
     // console.log(scene.children[7].components[0])
 
