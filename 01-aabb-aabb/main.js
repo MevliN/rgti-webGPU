@@ -57,20 +57,41 @@ scene.traverse(node => {
 });
 
 function update(time, dt) {
+    function update(time, dt) {
     scene.traverse(node => {
         for (const component of node.components) {
             component.update?.(time, dt);
         }
     });
-    
+
     physics.update(time, dt);
 
+    // Define an offset for the camera (e.g., 5 units behind, 2 units above)
+    const offset = vec3.fromValues(-3, -25, -15);
 
-    scene.children[0].components[0].translation[0] = scene.children[7].components[0].translation[0] + 5;
-	scene.children[0].components[0].translation[1] = scene.children[7].components[0].translation[1] + 15;
-	scene.children[0].components[0].translation[2] = scene.children[7].components[0].translation[2] + 30;
+    // Get the player's position
+    const playerPosition = person.components[0].translation;
 
-    // console.log(scene.children[7].components[0])
+    // Calculate the new camera position relative to the player
+    const cameraPosition = vec3.create();
+    const playerRotation = person.components[0].rotation; // Assume quaternion
+    const rotatedOffset = vec3.create();
+    vec3.transformQuat(rotatedOffset, offset, playerRotation); // Rotate offset by player's rotation
+    vec3.add(cameraPosition, playerPosition, rotatedOffset);
+
+    // Update the camera's position
+    camera.components[0].translation = cameraPosition;
+
+    // Make the camera look at the player
+    const lookAtMatrix = mat4.create();
+    const up = vec3.fromValues(0, 1, 0); // Up vector
+    mat4.targetTo(lookAtMatrix, cameraPosition, playerPosition, up);
+
+    // Extract rotation from the look-at matrix
+    const rotation = quat.create();
+    mat4.getRotation(rotation, lookAtMatrix);
+    camera.components[0].rotation = rotation;
+}
 
 }
 
