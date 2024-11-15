@@ -15,6 +15,12 @@ import {
 
 import { Physics } from './Physics.js';
 
+import { 
+    mat4,
+    vec3,
+    quat
+} from 'glm';
+
 const canvas = document.querySelector('canvas');
 const renderer = new UnlitRenderer(canvas);
 await renderer.initialize();
@@ -23,19 +29,16 @@ const loader = new GLTFLoader();
 await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
-const camera = loader.loadNode("Camera");
-scene.children[0].components[0].rotation[3] += 1;
-
-const person = loader.loadNode("Person");
-//camera.addComponent(new FirstPersonController(camera, canvas));
+const camera = scene.children[0];
+const person = scene.children[7];
 person.isDynamic = true;
-//camera.isDynamic = true;
 person.aabb = {
     min: [-0.2, -0.2, -0.2],
     max: [0.2, 0.2, 0.2],
 };
 
 person.addComponent(new CharacterController(person, canvas));
+camera.addComponent(new FirstPersonController(camera, canvas));
 
 loader.loadNode('terrain').isStatic = true;
 loader.loadNode('palm leaves').isStatic = true;
@@ -57,7 +60,6 @@ scene.traverse(node => {
 });
 
 function update(time, dt) {
-    function update(time, dt) {
     scene.traverse(node => {
         for (const component of node.components) {
             component.update?.(time, dt);
@@ -91,8 +93,6 @@ function update(time, dt) {
     const rotation = quat.create();
     mat4.getRotation(rotation, lookAtMatrix);
     camera.components[0].rotation = rotation;
-}
-
 }
 
 function render() {
