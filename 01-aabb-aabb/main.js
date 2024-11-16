@@ -40,13 +40,12 @@ person.aabb = {
 person.addComponent(new CharacterController(person, canvas));
 camera.addComponent(new FirstPersonController(camera, canvas));
 
-loader.loadNode('terrain').isStatic = true;
-loader.loadNode('palm leaves').isStatic = true;
-loader.loadNode('palm stems').isStatic = true;
-loader.loadNode('plants').isStatic = true;
-loader.loadNode('rocks').isStatic = true;
-loader.loadNode('grass').isStatic = true;
-loader.loadNode('Plane').isStatic = true;
+loader.loadNode('Deblo').isStatic = true;
+loader.loadNode('Deblo.001').isStatic = true;
+loader.loadNode('listi').isStatic = true;
+loader.loadNode('listi.001').isStatic = true;
+loader.loadNode('morje').isStatic = true;
+loader.loadNode('otok').isStatic = true;
 
 const physics = new Physics(scene);
 scene.traverse(node => {
