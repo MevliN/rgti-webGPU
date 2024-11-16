@@ -69,7 +69,7 @@ function update(time, dt) {
     physics.update(time, dt);
 
     // Define an offset for the camera (e.g., 5 units behind, 2 units above)
-    const offset = vec3.fromValues(-3, -25, -15);
+    const offset = vec3.fromValues(-5, -80, -50);
 
     // Get the player's position
     const playerPosition = person.components[0].translation;
