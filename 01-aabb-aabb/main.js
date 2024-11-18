@@ -30,7 +30,7 @@ await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
 const camera = scene.children[0];
-const person = scene.children[7];
+const person = scene.children[5];
 person.isDynamic = true;
 person.aabb = {
     min: [-0.2, -0.2, -0.2],
@@ -42,10 +42,21 @@ camera.addComponent(new FirstPersonController(camera, canvas));
 
 loader.loadNode('Deblo').isStatic = true;
 loader.loadNode('Deblo.001').isStatic = true;
-loader.loadNode('listi').isStatic = true;
-loader.loadNode('listi.001').isStatic = true;
-loader.loadNode('morje').isStatic = true;
-loader.loadNode('otok').isStatic = true;
+loader.loadNode('Listi').isStatic = true;
+loader.loadNode('Listi.001').isStatic = true;
+loader.loadNode('Morje').isStatic = true;
+loader.loadNode('Nebo').isStatic = true;
+loader.loadNode('Nebo.001').isStatic = true;
+loader.loadNode('Nebo.002').isStatic = true;
+loader.loadNode('Nebo.003').isStatic = true;
+loader.loadNode('Kamen').isStatic = true;
+loader.loadNode('Kamen.001').isStatic = true;
+loader.loadNode('Kamen.002').isStatic = true;
+loader.loadNode('Kamen.003').isStatic = true;
+loader.loadNode('Kamen.004').isStatic = true;
+loader.loadNode('Kamen.005').isStatic = true;
+loader.loadNode('Kamen.006').isStatic = true;
+loader.loadNode('Kamen.007').isStatic = true;
 
 const physics = new Physics(scene);
 scene.traverse(node => {
@@ -58,6 +69,12 @@ scene.traverse(node => {
     node.aabb = mergeAxisAlignedBoundingBoxes(boxes);
 });
 
+const keys = {};
+document.addEventListener('keydown', e => keys[e.code] = true);
+document.addEventListener('keyup', e => keys[e.code] = false);
+
+let cameraVerticalOffset = 0;
+
 function update(time, dt) {
     scene.traverse(node => {
         for (const component of node.components) {
@@ -67,28 +84,35 @@ function update(time, dt) {
 
     physics.update(time, dt);
 
-    // Define an offset for the camera (e.g., 5 units behind, 2 units above)
-    const offset = vec3.fromValues(-5, -80, -50);
+    const cameraSpeed = 20;
 
-    // Get the player's position
+    // da ne more pogledat prenizko (pod naš pesek) ali preveč navpično
+    if (keys['KeyE'] && cameraVerticalOffset + dt * cameraSpeed < 25) {
+        cameraVerticalOffset += dt * cameraSpeed;
+    }
+    if (keys['KeyQ'] && cameraVerticalOffset - dt * cameraSpeed > -25) {
+        cameraVerticalOffset -= dt * cameraSpeed;
+    }
+
+    // kolko je kamera zamaknjena od osebe
+    const offset = vec3.fromValues(-5, -70, -25);
+
     const playerPosition = person.components[0].translation;
 
-    // Calculate the new camera position relative to the player
     const cameraPosition = vec3.create();
-    const playerRotation = person.components[0].rotation; // Assume quaternion
+    const playerRotation = person.components[0].rotation;
     const rotatedOffset = vec3.create();
-    vec3.transformQuat(rotatedOffset, offset, playerRotation); // Rotate offset by player's rotation
+    vec3.transformQuat(rotatedOffset, offset, playerRotation);
     vec3.add(cameraPosition, playerPosition, rotatedOffset);
 
-    // Update the camera's position
+    cameraPosition[1] += cameraVerticalOffset;
+
     camera.components[0].translation = cameraPosition;
 
-    // Make the camera look at the player
     const lookAtMatrix = mat4.create();
-    const up = vec3.fromValues(0, 1, 0); // Up vector
+    const up = vec3.fromValues(0, 1, 0);
     mat4.targetTo(lookAtMatrix, cameraPosition, playerPosition, up);
 
-    // Extract rotation from the look-at matrix
     const rotation = quat.create();
     mat4.getRotation(rotation, lookAtMatrix);
     camera.components[0].rotation = rotation;
