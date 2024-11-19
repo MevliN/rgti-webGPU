@@ -1,5 +1,7 @@
 This is the repository of our project for the RGTI course.
 
+You run this file by adding "01-aabb-aabb" file to "webgpu-examples-master/examples/05-collision" and the "CharacterController" file to "webgpu-examples-master/engine/controllers".
+
 !TODO! add description here
 
 Whiteboard:
