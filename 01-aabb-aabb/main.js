@@ -29,8 +29,9 @@ const loader = new GLTFLoader();
 await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
+
 const camera = scene.children[0];
-const person = scene.children[5];
+const person = scene.children[1];
 person.isDynamic = true;
 person.aabb = {
     min: [-0.2, -0.2, -0.2],
@@ -39,6 +40,17 @@ person.aabb = {
 
 person.addComponent(new CharacterController(person, canvas));
 camera.addComponent(new FirstPersonController(camera, canvas));
+
+const physics = new Physics(scene);
+scene.traverse(node => {
+    const model = node.getComponentOfType(Model);
+    if (!model) {
+        return;
+    }
+
+    const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
+    node.aabb = mergeAxisAlignedBoundingBoxes(boxes);
+});
 
 jePozgano(false, 'Center', 'ZivoDrevo', 'PozganoDrevo', 'Ogenj');
 jePozgano(true, 'Center.001', 'ZivoDrevo.001', 'PozganoDrevo.001', 'Ogenj.001');
