@@ -40,15 +40,24 @@ person.aabb = {
 person.addComponent(new CharacterController(person, canvas));
 camera.addComponent(new FirstPersonController(camera, canvas));
 
-loader.loadNode('Deblo').isStatic = true;
-loader.loadNode('Deblo.001').isStatic = true;
-loader.loadNode('Listi').isStatic = true;
-loader.loadNode('Listi.001').isStatic = true;
+jePozgano(false, 'Center', 'ZivoDrevo', 'PozganoDrevo', 'Ogenj');
+jePozgano(true, 'Center.001', 'ZivoDrevo.001', 'PozganoDrevo.001', 'Ogenj.001');
+jePozgano(true, 'Center.002', 'ZivoDrevo.002', 'PozganoDrevo.002', 'Ogenj.002');
+jePozgano(true, 'Center.003', 'ZivoDrevo.003', 'PozganoDrevo.003', 'Ogenj.003');
+jePozgano(true, 'Center.004', 'ZivoDrevo.004', 'PozganoDrevo.004', 'Ogenj.004');
+
+loader.loadNode('ZivoDrevo').isStatic = true;
+loader.loadNode('PozganoDrevo').isStatic = true;
+loader.loadNode('ZivoDrevo.001').isStatic = true;
+loader.loadNode('PozganoDrevo.001').isStatic = true;
+loader.loadNode('ZivoDrevo.002').isStatic = true;
+loader.loadNode('PozganoDrevo.002').isStatic = true;
+loader.loadNode('ZivoDrevo.003').isStatic = true;
+loader.loadNode('PozganoDrevo.003').isStatic = true;
+loader.loadNode('ZivoDrevo.004').isStatic = true;
+loader.loadNode('PozganoDrevo.004').isStatic = true;
 loader.loadNode('Morje').isStatic = true;
 loader.loadNode('Nebo').isStatic = true;
-loader.loadNode('Nebo.001').isStatic = true;
-loader.loadNode('Nebo.002').isStatic = true;
-loader.loadNode('Nebo.003').isStatic = true;
 loader.loadNode('Kamen').isStatic = true;
 loader.loadNode('Kamen.001').isStatic = true;
 loader.loadNode('Kamen.002').isStatic = true;
@@ -57,23 +66,6 @@ loader.loadNode('Kamen.004').isStatic = true;
 loader.loadNode('Kamen.005').isStatic = true;
 loader.loadNode('Kamen.006').isStatic = true;
 loader.loadNode('Kamen.007').isStatic = true;
-
-const physics = new Physics(scene);
-scene.traverse(node => {
-    const model = node.getComponentOfType(Model);
-    if (!model) {
-        return;
-    }
-
-    const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
-    node.aabb = mergeAxisAlignedBoundingBoxes(boxes);
-});
-
-const keys = {};
-document.addEventListener('keydown', e => keys[e.code] = true);
-document.addEventListener('keyup', e => keys[e.code] = false);
-
-let cameraVerticalOffset = 0;
 
 function update(time, dt) {
     scene.traverse(node => {
@@ -84,39 +76,32 @@ function update(time, dt) {
 
     physics.update(time, dt);
 
-    const cameraSpeed = 20;
+    // offset kamere od osebe
+    const offset = vec3.fromValues(-5, -75, -25);
 
-    // da ne more pogledat prenizko (pod naš pesek) ali preveč navpično
-    if (keys['KeyE'] && cameraVerticalOffset + dt * cameraSpeed < 25) {
-        cameraVerticalOffset += dt * cameraSpeed;
-    }
-    if (keys['KeyQ'] && cameraVerticalOffset - dt * cameraSpeed > -25) {
-        cameraVerticalOffset -= dt * cameraSpeed;
-    }
+    // točka kamor gleda kamera
+    const playerPosition = [person.components[0].translation[0] + 5, person.components[0].translation[1], person.components[0].translation[2]];
 
-    // kolko je kamera zamaknjena od osebe
-    const offset = vec3.fromValues(-5, -70, -25);
-
-    const playerPosition = person.components[0].translation;
-
+    // Premikanje kamere z osebo
     const cameraPosition = vec3.create();
-    const playerRotation = person.components[0].rotation;
+    const playerRotation = person.components[0].rotation; // Assume quaternion
     const rotatedOffset = vec3.create();
-    vec3.transformQuat(rotatedOffset, offset, playerRotation);
+    vec3.transformQuat(rotatedOffset, offset, playerRotation); // Rotate offset by player's rotation
     vec3.add(cameraPosition, playerPosition, rotatedOffset);
-
-    cameraPosition[1] += cameraVerticalOffset;
 
     camera.components[0].translation = cameraPosition;
 
+    // Kamera spremlja točko pogleda
     const lookAtMatrix = mat4.create();
-    const up = vec3.fromValues(0, 1, 0);
+    const up = vec3.fromValues(0, 1, 0); // Up vector
     mat4.targetTo(lookAtMatrix, cameraPosition, playerPosition, up);
 
+    // Rotacija kamere
     const rotation = quat.create();
     mat4.getRotation(rotation, lookAtMatrix);
     camera.components[0].rotation = rotation;
 }
+
 
 function render() {
     renderer.render(scene, camera);
@@ -128,3 +113,27 @@ function resize({ displaySize: { width, height }}) {
 
 new ResizeSystem({ canvas, resize }).start();
 new UpdateSystem({ update, render }).start();
+
+
+// funkcije gorenja
+function gori (gori, center, ogenj) {
+    if (!gori) {
+        loader.loadNode(center).removeChild(loader.loadNode(ogenj));
+    }
+    else {
+        loader.loadNode(center).addChild(loader.loadNode(ogenj));
+    }
+}
+
+function jePozgano (jePozgano, center, zivoDr, pozganoDr, ogenj) {
+    if (jePozgano) {
+        loader.loadNode(center).removeChild(loader.loadNode(zivoDr));
+        gori(false, center, ogenj);
+    }
+    else {
+        loader.loadNode(center).addChild(loader.loadNode(zivoDr));
+        loader.loadNode(center).removeChild(loader.loadNode(pozganoDr));
+        gori(false, center, ogenj);
+    }
+}
+
