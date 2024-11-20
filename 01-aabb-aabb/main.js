@@ -30,6 +30,23 @@ await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
 
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const audioUrl = 'path/to/your/ambient-audio.mp3';
+
+/*
+fetch(audioUrl)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    .then(audioBuffer => {
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.loop = true;
+        source.connect(audioContext.destination);
+        source.start(0);
+    })
+    .catch(e => console.error('Error with decoding audio data', e));
+*/
+
 const camera = scene.children[0];
 const person = scene.children[1];
 person.isDynamic = true;
