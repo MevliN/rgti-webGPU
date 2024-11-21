@@ -21,6 +21,9 @@ import {
     quat
 } from 'glm';
 
+import { Renderer } from './Renderer.js';
+import { Light } from './Light.js';
+
 const canvas = document.querySelector('canvas');
 const renderer = new UnlitRenderer(canvas);
 await renderer.initialize();
@@ -81,6 +84,13 @@ loader.loadNode('Kamen.004').isStatic = true;
 loader.loadNode('Kamen.005').isStatic = true;
 loader.loadNode('Kamen.006').isStatic = true;
 loader.loadNode('Kamen.007').isStatic = true;
+
+// Sonce
+const light = new Node();
+light.addComponent(new Light({
+    direction: [-1, 1, 1],
+}));
+scene.addChild(light);
 
 function update(time, dt) {
     scene.traverse(node => {
