@@ -2,11 +2,15 @@ import { ResizeSystem } from 'engine/systems/ResizeSystem.js';
 import { UpdateSystem } from 'engine/systems/UpdateSystem.js';
 
 import { GLTFLoader } from 'engine/loaders/GLTFLoader.js';
-import { UnlitRenderer } from 'engine/renderers/UnlitRenderer.js';
 import { CharacterController } from 'engine/controllers/CharacterController.js';
 import { FirstPersonController } from 'engine/controllers/FirstPersonController.js';
 
-import { Camera, Model } from 'engine/core.js';
+import {
+    Camera,
+    Model,
+    Node,
+    Transform,
+} from 'engine/core.js';
 
 import {
     calculateAxisAlignedBoundingBox,
@@ -25,7 +29,7 @@ import { Renderer } from './Renderer.js';
 import { Light } from './Light.js';
 
 const canvas = document.querySelector('canvas');
-const renderer = new UnlitRenderer(canvas);
+const renderer = new Renderer(canvas);
 await renderer.initialize();
 
 const loader = new GLTFLoader();
