@@ -28,6 +28,49 @@ import {
 import { Renderer } from './Renderer.js';
 import { Light } from './Light.js';
 
+
+// Create the playBackgroundAudio function to be called after a user gesture
+async function playBackgroundAudio() {
+    // Create a new AudioContext
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Load the audio file
+    const response = await fetch('Background_noise.mp3'); // Replace with your audio file path
+    const audioData = await response.arrayBuffer();
+
+    // Decode the audio data
+    const audioBuffer = await audioContext.decodeAudioData(audioData);
+
+    // Create a buffer source
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.loop = true; // Enable looping
+
+    // Create a GainNode (to control volume)
+    const gainNode = audioContext.createGain();
+
+    // Set the gain to a value between 0 and 1 to make the sound quieter
+    gainNode.gain.value = 0.2; // 0.2 means the sound will be quieter (20% of the original volume)
+
+    // Connect the source to the gain node, and then to the destination (the speakers)
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    // Start playback
+    source.start();
+}
+
+// Wait for a user gesture (e.g., click) to play the background audio
+document.addEventListener('click', () => {
+    playBackgroundAudio().catch(error => {
+        console.error('Error playing background audio:', error);
+    });
+});
+
+
+
+await playBackgroundAudio();
+
 const canvas = document.querySelector('canvas');
 const renderer = new Renderer(canvas);
 await renderer.initialize();
