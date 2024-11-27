@@ -149,13 +149,16 @@ document.addEventListener('keydown', (event) => {
         let edgeDist = 95;
 
         scene.traverse(node => {
+            if(node.name) {
+                console.log(node.name);
+            }
             if (node.name && node.name.startsWith('Ogenj')) {
                 const dx = node.translation[0] - playerPosition[0];
                 const dy = node.translation[1] - playerPosition[1];
                 const dz = node.translation[2] - playerPosition[2];
                 const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                if (distance <= 10) {
+                
+                if (distance <= 50) {
                     nearFire = true;
                 }
             }
@@ -182,6 +185,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 let fireTimer = 0;
+let firstFire = true;
 
 function update(time, dt) {
     scene.traverse(node => {
@@ -222,6 +226,12 @@ function update(time, dt) {
     }
     else {
         napolniVedro(false, 'Oseba', 'PolnoVedro', 'PraznoVedro');
+    }
+
+    if (firstFire) {
+        gori(true, 'Center', 'Ogenj');
+        console.log('First fire spawned at Center');
+        firstFire = false;
     }
 
     // Increment the fire timer
