@@ -139,6 +139,50 @@ light.addComponent(new Light({
 }));
 scene.addChild(light);
 
+var vedro = false;
+
+// Add event listener for the F key
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'KeyF') {
+        const playerPosition = person.components[0].translation;
+        let nearFire = false;
+        let edgeDist = 95;
+
+        scene.traverse(node => {
+            if (node.name && node.name.startsWith('Ogenj')) {
+                const dx = node.translation[0] - playerPosition[0];
+                const dy = node.translation[1] - playerPosition[1];
+                const dz = node.translation[2] - playerPosition[2];
+                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                if (distance <= 10) {
+                    nearFire = true;
+                }
+            }
+        });
+
+        // Check if the player is near the edge of the main platform
+        if (!vedro) {
+            if (playerPosition[0] > edgeDist || playerPosition[0] < -edgeDist || playerPosition[2] > edgeDist || playerPosition[2] < -edgeDist) {
+                vedro = true;
+                console.log('Bucket filled');
+            } else {
+                console.log('Not near water');
+            }
+        }
+        else {
+            if (nearFire && !(playerPosition[0] > edgeDist || playerPosition[0] < -edgeDist || playerPosition[2] > edgeDist || playerPosition[2] < -edgeDist)) {
+                vedro = false;
+                console.log('Bucket emptied');
+            } else {
+                console.log('No fire nearby');
+            }
+        }
+    }
+});
+
+let fireTimer = 0;
+
 function update(time, dt) {
     scene.traverse(node => {
         for (const component of node.components) {
@@ -172,6 +216,25 @@ function update(time, dt) {
     const rotation = quat.create();
     mat4.getRotation(rotation, lookAtMatrix);
     camera.components[0].rotation = rotation;
+
+    if (vedro) {
+        napolniVedro(true, 'Oseba', 'PolnoVedro', 'PraznoVedro');
+    }
+    else {
+        napolniVedro(false, 'Oseba', 'PolnoVedro', 'PraznoVedro');
+    }
+
+    // Increment the fire timer
+    fireTimer += dt;
+
+    // Call gori every 5 seconds to spawn a fire
+    if (fireTimer >= 5000) {
+        const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
+        const randomCenter = centers[Math.floor(Math.random() * centers.length)];
+        gori(true, randomCenter, 'Ogenj');
+        console.log('Fire spawned at', randomCenter);
+        fireTimer = 0; // Reset the timer
+    }
 }
 
 
@@ -198,6 +261,7 @@ function gori (gori, center, ogenj) {
 
 function jePozgano (jePozgano, center, zivoDr, pozganoDr, ogenj) {
     if (jePozgano) {
+        loader.loadNode(center).addChild(loader.loadNode(pozganoDr));
         loader.loadNode(center).removeChild(loader.loadNode(zivoDr));
         gori(false, center, ogenj);
     }
@@ -210,6 +274,7 @@ function jePozgano (jePozgano, center, zivoDr, pozganoDr, ogenj) {
 
 function napolniVedro (jePolno, oseba, polnoVedro, praznoVedro) {
     if (jePolno) {
+        loader.loadNode(oseba).addChild(loader.loadNode(polnoVedro));
         loader.loadNode(oseba).removeChild(loader.loadNode(praznoVedro));
     }
     else {
