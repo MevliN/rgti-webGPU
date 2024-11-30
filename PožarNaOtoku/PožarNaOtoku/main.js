@@ -81,7 +81,7 @@ await loader.load('Scene/Island.gltf');
 const scene = loader.loadScene(loader.defaultScene);
 
 const camera = scene.children[0];
-const person = scene.children[1];
+const person = scene.children[20];
 person.isDynamic = true;
 person.aabb = {
     min: [-0.5, 0, -0.5],
