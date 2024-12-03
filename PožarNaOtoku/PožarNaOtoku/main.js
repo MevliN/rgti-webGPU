@@ -153,15 +153,18 @@ document.addEventListener('keydown', (event) => {
         const playerPosition = person.components[0].translation;
         let nearFire = false;
         let edgeDist = 90;
-
         scene.traverse(node => {
-            if(node.name) {
-                console.log(node.name);
-            }
-            if (node.name && node.name.startsWith('Ogenj')) {
-                const dx = node.translation[0] - playerPosition[0];
-                const dy = node.translation[1] - playerPosition[1];
-                const dz = node.translation[2] - playerPosition[2];
+            /*if(loader.loadNode('Ogenj')) {
+                console.log(loader.loadNode('Ogenj'));
+            }*/
+            if (loader.loadNode('Ogenj') || loader.loadNode('Ogenj.001')) {
+                node = loader.loadNode('Ogenj');
+                // console.log(loader.loadNode('Ogenj'));
+                // console.log(node.getComponentOfType(Transform));
+                var translation = node.getComponentOfType(Transform).translation
+                const dx = translation[0] - playerPosition[0];
+                const dy = translation[1] - playerPosition[1];
+                const dz = translation[2] - playerPosition[2];
                 const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
                 
                 console.log('Distance to fire:', distance);
