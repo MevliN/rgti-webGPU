@@ -252,6 +252,8 @@ const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
 let fireTimer = 0;
 let firstFire = true;
 
+let t = 0;
+
 function update(time, dt) {
     scene.traverse(node => {
         for (const component of node.components) {
