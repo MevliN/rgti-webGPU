@@ -152,6 +152,7 @@ document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyF') {
         const playerPosition = person.components[0].translation;
         let nearFire = false;
+        
         let closestFire = null;
         let minDistance = 1000;
         let edgeDist = 90;
