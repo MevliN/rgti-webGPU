@@ -7,12 +7,39 @@
     <title>Požar na otoku</title>
 
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
 </head>
 <body>
     <h1 class="fire">Požar na Otoku</h1>
-    <ul class="button">
+    <ul class="button" id="start">
         <a href="PožarNaOtoku/">Start Game</a>
     </ul>
+
+    <div id="overlay" onclick="off()">
+        <div class="text1">Game instructions</div>
+        <div class="text">You are on vacation and you accidentally set a tree on fire.</div>
+        <div class="text">You have to put the fire out before you burn down the whole island.</div>
+        <div class="text">Movement is with 'W', 'A', 'S', 'D' and with the mouse.</div>
+        <div class="text">If you are near water, press 'F' to fill up your bucket.</div>
+        <div class="text">And if you are near a burning tree, press 'F' to put out the fire.</div>
+    </div>
+      
+    <ul class="button" id="directions" onclick="on()">
+        <button>
+            <span class="material-symbols-outlined" id="game">sports_esports</span>
+        </button>
+    </ul>
+      
+    <script>
+        function on() {
+            document.getElementById("overlay").style.display = "block";
+        }
+      
+        function off() {
+            document.getElementById("overlay").style.display = "none";
+        }
+    </script>
     
     <footer>
         <p>
