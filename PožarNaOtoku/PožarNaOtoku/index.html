@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>AABB-AABB</title>
+    <title>Požar na Otoku</title>
     <script type="importmap">
     {
         "imports": {
@@ -14,10 +14,26 @@
     </script>
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="../../../engine/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <style>
+        .volume-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            font-size: 50px;
+            color: black;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="fullscreen no-touch pixelated">
         <canvas></canvas>
     </div>
+
+    <!-- Volume Button -->
+    <span id="volume-button" class="material-symbols-outlined volume-icon">volume_off</span>
+
 </body>
 </html>
