@@ -102,6 +102,12 @@ scene.traverse(node => {
     node.aabb = mergeAxisAlignedBoundingBoxes(boxes);
 });
 
+scene.traverse(node => {
+    if (node.name && node.name.startsWith('Ogenj')) {
+        console.log(`Ogenj node position: ${node.translation}`);
+    }
+});
+
 jePozgano(false, 'Center', 'ZivoDrevo', 'PozganoDrevo', 'Ogenj');
 jePozgano(false, 'Center.001', 'ZivoDrevo.001', 'PozganoDrevo.001', 'Ogenj.001');
 jePozgano(false, 'Center.002', 'ZivoDrevo.002', 'PozganoDrevo.002', 'Ogenj.002');
@@ -146,7 +152,7 @@ document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyF') {
         const playerPosition = person.components[0].translation;
         let nearFire = false;
-        let edgeDist = 95;
+        let edgeDist = 90;
 
         scene.traverse(node => {
             if(node.name) {
@@ -158,6 +164,7 @@ document.addEventListener('keydown', (event) => {
                 const dz = node.translation[2] - playerPosition[2];
                 const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
                 
+                console.log('Distance to fire:', distance);
                 if (distance <= 50) {
                     nearFire = true;
                 }
@@ -184,8 +191,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-let fireTimer = 0;
-let firstFire = true;
+//let fireTimer = 0;
+//let firstFire = true;
 
 function update(time, dt) {
     scene.traverse(node => {
@@ -228,13 +235,14 @@ function update(time, dt) {
         napolniVedro(false, 'Oseba', 'PolnoVedro', 'PraznoVedro');
     }
 
-    if (firstFire) {
-        gori(true, 'Center', 'Ogenj');
-        console.log('First fire spawned at Center');
-        firstFire = false;
-    }
+    gori(true, 'Center', 'Ogenj');
+    gori(true, 'Center.001', 'Ogenj.001');
+    gori(true, 'Center.002', 'Ogenj.002');
+    gori(true, 'Center.003', 'Ogenj.003');
+    gori(true, 'Center.004', 'Ogenj.004');
 
     // Increment the fire timer
+    /*
     fireTimer += dt;
 
     // Call gori every 5 seconds to spawn a fire
@@ -245,6 +253,7 @@ function update(time, dt) {
         console.log('Fire spawned at', randomCenter);
         fireTimer = 0; // Reset the timer
     }
+    */
 }
 
 
