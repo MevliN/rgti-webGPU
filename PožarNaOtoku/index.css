@@ -3,6 +3,11 @@
     src: url(HTML/Beinancia-Regular\(1\).otf);
 }
 
+@font-face {
+    font-family: font2;
+    src: url(HTML/Costaline-Thin.otf);
+}
+
 * {
     font-family: font;
 }
@@ -46,6 +51,63 @@ a {
 a:hover{
     background: rgba(255, 255, 255, 0.5);
     border-radius: 8px;
+}
+
+#game {
+    font-size: 60px
+}
+
+button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: transparent;
+    border: none;
+    float: right;
+    font-size: 50px;
+    padding: 20px 20px 0px 20px;
+    cursor: pointer;
+}
+
+button:hover{
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+/* for directions overlay */
+#overlay {
+    position: fixed;
+    display: none;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    background-color: rgb(228, 131, 52, 0.7);
+    z-index: 2;
+    cursor: pointer;
+}
+
+.text1 {
+    position: relative;
+    top: 30%;
+    left: 50%;
+    font-size: 50px;
+    color: white;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    text-align: center;
+}
+
+.text{
+    position: relative;
+    top: 30%;
+    left: 50%;
+    font-size: 30px;
+    color: white;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    font-family: font2;
+    text-align: center;
 }
 
 :root {
