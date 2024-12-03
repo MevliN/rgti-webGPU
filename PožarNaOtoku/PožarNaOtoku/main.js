@@ -151,6 +151,7 @@ var vedro = false;
 document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyF') {
         const playerPosition = person.components[0].translation;
+        let nearFire = false;
         let closestFire = null;
         let minDistance = 1000;
         let edgeDist = 90;
@@ -176,7 +177,9 @@ document.addEventListener('keydown', (event) => {
             }
         });
 
-        if (minDistance < 10) {
+        console.log('Closest fire:', centers[closestFire], 'Distance:', minDistance);
+
+        if (minDistance < 30) {
             nearFire = true;
         }
 
@@ -247,7 +250,7 @@ function update(time, dt) {
         napolniVedro(false, 'Oseba', 'PolnoVedro', 'PraznoVedro');
     }
 
-    /*
+    
     if (firstFire) {
         gori(true, 'Center', 'Ogenj');
         gori(true, 'Center.001', 'Ogenj.001');
@@ -256,7 +259,7 @@ function update(time, dt) {
         gori(true, 'Center.004', 'Ogenj.004');
         firstFire = false;
     }
-    */
+    
 
     // Increment the fire timer
     fireTimer += dt;
