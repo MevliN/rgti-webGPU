@@ -295,25 +295,63 @@ function update(time, dt) {
 
     
     if (firstFire) {
-        gori(true, 'Center', 'Ogenj');
-        gori(true, 'Center.001', 'Ogenj.001');
-        gori(true, 'Center.002', 'Ogenj.002');
-        gori(true, 'Center.003', 'Ogenj.003');
-        gori(true, 'Center.004', 'Ogenj.004');
+        gori(false, 'Center', 'Ogenj');
+        gori(false, 'Center.001', 'Ogenj.001');
+        gori(false, 'Center.002', 'Ogenj.002');
+        gori(false, 'Center.003', 'Ogenj.003');
+        gori(false, 'Center.004', 'Ogenj.004');
         firstFire = false;
     }
     
-
+    let i = 0;
     // Increment the fire timer
     fireTimer += dt;
 
     // Call gori every 5 seconds to spawn a fire
-    if (fireTimer >= 15000) {
-        const randomIndex = Math.floor(Math.random() * 5);
+    if (fireTimer >= 30 && centers.length > 0) {
+        const randomIndex = Math.floor(Math.random() * (5 - i));
         gori(true, centers[randomIndex], fires[randomIndex]);
         console.log('Fire spawned at', centers[randomIndex]);
         fireTimer = 0; // Reset the timer
+        i++;
+        centers.splice(randomIndex, 1);
+        fires.splice(randomIndex, 1);
+        // console.log(centers);
     }
+
+
+    // for displaying game score
+    var all = 5;
+
+    // overall timer
+    t += dt;
+
+    // Update the count down every time the tree burns down
+    var x = setInterval(function() {
+
+        // Get amount of live trees
+        var counter = centers.length;
+
+        // Find the distance between all trees and alive at the moment
+        var distance = all - counter;
+
+        // Display the result in the element with id="demo"
+        var minutes = Math.trunc(t / 60);
+        var seconds = Math.trunc(t % 60);
+        
+        if (minutes > 0) {
+            document.getElementById("demo").innerHTML = counter + " / " + all + " Time: " + minutes + "m " + seconds + "s";
+        }
+        else {
+            document.getElementById("demo").innerHTML = counter + " / " + all + " Time: " + seconds + "s";
+        }
+        
+        // If the count down is finished, write some text
+        if (distance == all) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "Game Over";
+        }
+    }, 1000);
 }
 
 
