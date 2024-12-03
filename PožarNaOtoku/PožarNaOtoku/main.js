@@ -28,48 +28,90 @@ import {
 import { Renderer } from './Renderer.js';
 import { Light } from './Light.js';
 
+// Audio setup with Web Audio API
+let audioContext;
+let audioBuffer;
+let gainNode;
+let source;
+let isPlaying = false;
+let isMuted = false;
 
-// Create the playBackgroundAudio function to be called after a user gesture
-async function playBackgroundAudio() {
-    // Create a new AudioContext
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Load and initialize the audio
+async function initializeAudio() {
+    try {
+        // Create an AudioContext
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Load the audio file
-    const response = await fetch('Background_noise.mp3'); // Replace with your audio file path
-    const audioData = await response.arrayBuffer();
+        // Fetch and decode the audio file
+        const response = await fetch('Background_noise.mp3');
+        const audioData = await response.arrayBuffer();
+        audioBuffer = await audioContext.decodeAudioData(audioData);
 
-    // Decode the audio data
-    const audioBuffer = await audioContext.decodeAudioData(audioData);
+        // Create a GainNode for volume control
+        gainNode = audioContext.createGain();
+        gainNode.gain.value = 0.05;
 
-    // Create a buffer source
-    const source = audioContext.createBufferSource();
+        console.log('Audio initialized successfully.');
+    } catch (error) {
+        console.error('Error initializing audio:', error);
+    }
+}
+
+// Play or resume audio
+function playAudio() {
+    if (!audioContext || !audioBuffer) {
+        console.error('Audio not initialized yet.');
+        return;
+    }
+
+    // Create a new source node for each playback
+    source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.loop = true; // Enable looping
 
-    // Create a GainNode (to control volume)
-    const gainNode = audioContext.createGain();
-
-    // Set the gain to a value between 0 and 1 to make the sound quieter
-    gainNode.gain.value = 0.2; // 0.2 means the sound will be quieter (20% of the original volume)
-
-    // Connect the source to the gain node, and then to the destination (the speakers)
+    // Connect nodes: Source -> Gain -> Destination (speakers)
     source.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
     // Start playback
     source.start();
+    isPlaying = true;
+    console.log('Audio playing.');
 }
 
-// Wait for a user gesture (e.g., click) to play the background audio
-document.addEventListener('click', () => {
-    playBackgroundAudio().catch(error => {
-        console.error('Error playing background audio:', error);
-    });
+// Toggle mute
+function toggleMute(volumeButton) {
+    if (!gainNode) {
+        console.error('GainNode not initialized.');
+        return;
+    }
+
+    if (isMuted) {
+        gainNode.gain.setValueAtTime(0.05, audioContext.currentTime); // Restore volume
+        volumeButton.textContent = 'volume_up';
+        isMuted = false;
+        console.log('Audio unmuted.');
+    } else {
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime); // Mute
+        volumeButton.textContent = 'volume_off';
+        isMuted = true;
+        console.log('Audio muted.');
+    }
+}
+
+const volumeButton = document.getElementById('volume-button');
+volumeButton.addEventListener('click', async () => {
+    if (!audioContext) {
+        await initializeAudio(); // Initialize the audio if not already done
+    }
+
+    if (!isPlaying) {
+        playAudio(); // Start playback on icon click
+        volumeButton.textContent = 'volume_up';
+    } else {
+        toggleMute(volumeButton); // Toggle mute if audio is already playing
+    }
 });
-
-
-
-await playBackgroundAudio();
 
 const canvas = document.querySelector('canvas');
 const renderer = new Renderer(canvas);
