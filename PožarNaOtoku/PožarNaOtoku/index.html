@@ -26,6 +26,20 @@
             cursor: pointer;
             padding: 20px;
         }
+
+        #demo {
+            position: fixed;
+            top: -10px;
+            left: 20px;
+            z-index: 1000;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            padding: 20px;
+            font-family: font;
+            background-color: rgb(228, 131, 52, 0.7);
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -35,6 +49,9 @@
 
     <!-- Volume Button -->
     <span id="volume-button" class="material-symbols-outlined volume-icon">volume_off</span>
+
+    <!-- Counter -->
+    <p id="demo"></p>
 
 </body>
 </html>
