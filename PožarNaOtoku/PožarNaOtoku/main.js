@@ -309,7 +309,8 @@ function update(time, dt) {
     // Increment the fire timer
     fireTimer += dt;
 
-    // Call gori every 5 seconds to spawn a fire
+    // Call gori every 30 seconds to spawn a fire
+    // Because we have minutes and I needed to check that
     if (fireTimer >= 30 && centers.length > 0) {
         const randomIndex = Math.floor(Math.random() * (5 - i));
         gori(true, centers[randomIndex], fires[randomIndex]);
