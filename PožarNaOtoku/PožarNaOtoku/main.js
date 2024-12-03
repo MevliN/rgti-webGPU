@@ -151,28 +151,34 @@ var vedro = false;
 document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyF') {
         const playerPosition = person.components[0].translation;
-        let nearFire = false;
+        let closestFire = null;
+        let minDistance = 1000;
         let edgeDist = 90;
+        let fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
+        let centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
+
         scene.traverse(node => {
-            /*if(loader.loadNode('Ogenj')) {
-                console.log(loader.loadNode('Ogenj'));
-            }*/
-            if (loader.loadNode('Ogenj') || loader.loadNode('Ogenj.001')) {
-                node = loader.loadNode('Ogenj');
-                // console.log(loader.loadNode('Ogenj'));
-                // console.log(node.getComponentOfType(Transform));
+            for(let i = 0; i < 5; i++) {
+                if (!loader.loadNode(fires[i])) {
+                    continue;
+                }
+                node = loader.loadNode(fires[i]);
                 var translation = node.getComponentOfType(Transform).translation
                 const dx = translation[0] - playerPosition[0];
                 const dy = translation[1] - playerPosition[1];
                 const dz = translation[2] - playerPosition[2];
                 const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
                 
-                console.log('Distance to fire:', distance);
-                if (distance <= 50) {
-                    nearFire = true;
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestFire = i;
                 }
             }
         });
+
+        if (minDistance < 10) {
+            nearFire = true;
+        }
 
         // Check if the player is near the edge of the main platform
         if (!vedro) {
@@ -186,6 +192,7 @@ document.addEventListener('keydown', (event) => {
         else {
             if (nearFire && !(playerPosition[0] > edgeDist || playerPosition[0] < -edgeDist || playerPosition[2] > edgeDist || playerPosition[2] < -edgeDist)) {
                 vedro = false;
+                gori(false, centers[closestFire], fires[closestFire]);
                 console.log('Bucket emptied');
             } else {
                 console.log('No fire nearby');
@@ -194,8 +201,10 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-//let fireTimer = 0;
-//let firstFire = true;
+const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
+const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
+let fireTimer = 0;
+let firstFire = true;
 
 function update(time, dt) {
     scene.traverse(node => {
@@ -238,25 +247,27 @@ function update(time, dt) {
         napolniVedro(false, 'Oseba', 'PolnoVedro', 'PraznoVedro');
     }
 
-    gori(true, 'Center', 'Ogenj');
-    gori(true, 'Center.001', 'Ogenj.001');
-    gori(true, 'Center.002', 'Ogenj.002');
-    gori(true, 'Center.003', 'Ogenj.003');
-    gori(true, 'Center.004', 'Ogenj.004');
+    /*
+    if (firstFire) {
+        gori(true, 'Center', 'Ogenj');
+        gori(true, 'Center.001', 'Ogenj.001');
+        gori(true, 'Center.002', 'Ogenj.002');
+        gori(true, 'Center.003', 'Ogenj.003');
+        gori(true, 'Center.004', 'Ogenj.004');
+        firstFire = false;
+    }
+    */
 
     // Increment the fire timer
-    /*
     fireTimer += dt;
 
     // Call gori every 5 seconds to spawn a fire
-    if (fireTimer >= 5000) {
-        const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
-        const randomCenter = centers[Math.floor(Math.random() * centers.length)];
-        gori(true, randomCenter, 'Ogenj');
-        console.log('Fire spawned at', randomCenter);
+    if (fireTimer >= 15000) {
+        const randomIndex = Math.floor(Math.random() * 5);
+        gori(true, centers[randomIndex], fires[randomIndex]);
+        console.log('Fire spawned at', centers[randomIndex]);
         fireTimer = 0; // Reset the timer
     }
-    */
 }
 
 
