@@ -249,8 +249,9 @@ document.addEventListener('keydown', (event) => {
 
 const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
 const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
+let burning = [false, false, false, false, false];
 let fireTimer = 0;
-let firstFire = true;
+//let firstFire = true;
 
 let t = 0;
 
@@ -295,7 +296,7 @@ function update(time, dt) {
         napolniVedro(false, 'Oseba', 'PolnoVedro', 'PraznoVedro');
     }
 
-    
+    /*
     if (firstFire) {
         gori(false, 'Center', 'Ogenj');
         gori(false, 'Center.001', 'Ogenj.001');
@@ -304,22 +305,25 @@ function update(time, dt) {
         gori(false, 'Center.004', 'Ogenj.004');
         firstFire = false;
     }
+    */
     
-    let i = 0;
     // Increment the fire timer
     fireTimer += dt;
 
     // Call gori every 30 seconds to spawn a fire
     // Because we have minutes and I needed to check that
-    if (fireTimer >= 30 && centers.length > 0) {
-        const randomIndex = Math.floor(Math.random() * (5 - i));
+    if (fireTimer >= 30 && sum(burning) < 5) {
+        let validSpawn = false;
+        while (!validSpawn) {
+            let randomIndex = Math.floor(Math.random() * 5);
+            if (!burning[randomIndex]){
+                validSpawn = true;
+            }
+        }
         gori(true, centers[randomIndex], fires[randomIndex]);
+        burning[randomIndex] = true;
         console.log('Fire spawned at', centers[randomIndex]);
         fireTimer = 0; // Reset the timer
-        i++;
-        centers.splice(randomIndex, 1);
-        fires.splice(randomIndex, 1);
-        // console.log(centers);
     }
 
 
