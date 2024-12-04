@@ -197,6 +197,7 @@ const burning = [false, false, false, false, false];
 const burnedTrees = [false, false, false, false, false];
 const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
+const allBurned = false;
 
 
 // Add event listener for the F key
@@ -327,6 +328,8 @@ function update(time, dt) {
         }
     }
 
+    allBurned = burnedTrees.reduce((acc, value) => acc + value, 0) === 5;
+
     // Increment the fire timer
     if (burning.reduce((acc, value) => acc + value, 0) < 5){
         fireTimer += dt;
@@ -335,7 +338,7 @@ function update(time, dt) {
         // Because we have minutes and I needed to check that
         if (fireTimer >= 30) {
             let randomIndex = -1;
-            while (true && burnedTrees.reduce((acc, value) => acc + value, 0) < 5){
+            while (true && !allBurned){
                 randomIndex = Math.floor(Math.random() * burning.length);
                 if (!burnedTrees[randomIndex]){ 
                     if (!burning[randomIndex]){
