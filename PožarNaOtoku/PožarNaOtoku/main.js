@@ -339,7 +339,7 @@ function update(time, dt) {
     }
 
     // Increment the fire timer
-    if (burningCount < 5 && burnedCount < 5){
+    if ((burningCount < 5 - burnedCount) && burnedCount < 5){
         fireTimer += dt;
 
         // Call gori every 30 seconds to spawn a fire
