@@ -308,22 +308,24 @@ function update(time, dt) {
     */
     
     // Increment the fire timer
-    fireTimer += dt;
+    if (sum(burning) < 5){
+        fireTimer += dt;
 
-    // Call gori every 30 seconds to spawn a fire
-    // Because we have minutes and I needed to check that
-    if (fireTimer >= 30 && sum(burning) < 5) {
-        let validSpawn = false;
-        while (!validSpawn) {
-            let randomIndex = Math.floor(Math.random() * 5);
-            if (!burning[randomIndex]){
-                validSpawn = true;
+        // Call gori every 30 seconds to spawn a fire
+        // Because we have minutes and I needed to check that
+        if (fireTimer >= 30) {
+            let validSpawn = false;
+            while (!validSpawn) {
+                let randomIndex = Math.floor(Math.random() * 5);
+                if (!burning[randomIndex]){
+                    validSpawn = true;
+                }
             }
+            gori(true, centers[randomIndex], fires[randomIndex]);
+            burning[randomIndex] = true;
+            console.log('Fire spawned at', centers[randomIndex]);
+            fireTimer = 0; // Reset the timer
         }
-        gori(true, centers[randomIndex], fires[randomIndex]);
-        burning[randomIndex] = true;
-        console.log('Fire spawned at', centers[randomIndex]);
-        fireTimer = 0; // Reset the timer
     }
 
 
