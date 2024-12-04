@@ -317,7 +317,7 @@ function update(time, dt) {
     for (let i = 0; i < 5; i++) {
         if (burning[i]) {
             burnTimer[i] += dt;
-            if (burnTimer[i] >= 5) {
+            if (burnTimer[i] >= 20) {
                 burning[i] = false;
                 gori(false, centers[i], fires[i]);
                 jePozgano(true, centers[i], trees[i], burned[i], fires[i]);
