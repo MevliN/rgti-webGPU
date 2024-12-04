@@ -250,7 +250,7 @@ document.addEventListener('keydown', (event) => {
 const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
 const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
 let burning = [false, false, false, false, false];
-let fireTimer = 0;
+let fireTimer = 25;
 //let firstFire = true;
 
 let t = 0;
@@ -308,21 +308,21 @@ function update(time, dt) {
     */
     
     // Increment the fire timer
-    if (sum(burning) < 5){
+    if (burning.reduce((acc, value) => acc + value, 0) < 5){
         fireTimer += dt;
 
         // Call gori every 30 seconds to spawn a fire
         // Because we have minutes and I needed to check that
         if (fireTimer >= 30) {
-            let validSpawn = false;
-            while (!validSpawn) {
-                let randomIndex = Math.floor(Math.random() * 5);
+            let randomIndex = -1;
+            while (true) {
+                randomIndex = Math.floor(Math.random() * burning.length);
                 if (!burning[randomIndex]){
-                    validSpawn = true;
+                    burning[randomIndex] = true;
+                    break;
                 }
             }
             gori(true, centers[randomIndex], fires[randomIndex]);
-            burning[randomIndex] = true;
             console.log('Fire spawned at', centers[randomIndex]);
             fireTimer = 0; // Reset the timer
         }
