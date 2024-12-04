@@ -352,9 +352,9 @@ function update(time, dt) {
     if ((burningCount < 5 - burnedCount) && burnedCount < 5){
         fireTimer += dt;
 
-        // Call gori every 30 seconds to spawn a fire
+        // Call gori every 7 seconds to spawn a fire
         // Because we have minutes and I needed to check that
-        if (fireTimer >= 30) {
+        if (fireTimer >= 7) {
             let randomIndex = -1;
             while (true) {
                 randomIndex = Math.floor(Math.random() * burning.length);
