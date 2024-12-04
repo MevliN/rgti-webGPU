@@ -342,7 +342,7 @@ function update(time, dt) {
         // Because we have minutes and I needed to check that
         if (fireTimer >= 30) {
             let randomIndex = -1;
-            while (true && !allBurned){
+            while (true && burnedCount < 5) {
                 randomIndex = Math.floor(Math.random() * burning.length);
                 if (!burnedTrees[randomIndex]){ 
                     if (!burning[randomIndex]){
