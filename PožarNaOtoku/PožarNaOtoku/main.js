@@ -194,9 +194,10 @@ const trees = ['ZivoDrevo', 'ZivoDrevo.001', 'ZivoDrevo.002', 'ZivoDrevo.003', '
 const burned = ['PozganoDrevo', 'PozganoDrevo.001', 'PozganoDrevo.002', 'PozganoDrevo.003', 'PozganoDrevo.004'];
 const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
 const burning = [false, false, false, false, false];
+const burnedTrees = [false, false, false, false, false];
 const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
-const burnedCount = 0;
+
 
 // Add event listener for the F key
 document.addEventListener('keydown', (event) => {
@@ -316,12 +317,12 @@ function update(time, dt) {
     for (let i = 0; i < 5; i++) {
         if (burning[i]) {
             burnTimer[i] += dt;
-            if (burnTimer[i] >= 30) {
+            if (burnTimer[i] >= 5) {
                 burning[i] = false;
                 gori(false, centers[i], fires[i]);
                 jePozgano(true, centers[i], trees[i], burned[i], fires[i]);
                 burnTimer[i] = 0;
-                burnedCount++;
+                burnedTrees[i] = true;
             }
         }
     }
@@ -334,9 +335,9 @@ function update(time, dt) {
         // Because we have minutes and I needed to check that
         if (fireTimer >= 30) {
             let randomIndex = -1;
-            while (true) {
+            while (true && burnedTrees.reduce((acc, value) => acc + value, 0) < 5){
                 randomIndex = Math.floor(Math.random() * burning.length);
-                if (!loader.loadNode(burned[randomIndex])) {
+                if (!burnedTrees[randomIndex]){ 
                     if (!burning[randomIndex]){
                         console.log('Found non-burning tree:', randomIndex);
                         burning[randomIndex] = true;
