@@ -197,7 +197,9 @@ const burning = [false, false, false, false, false];
 const burnedTrees = [false, false, false, false, false];
 const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
-const allBurned = false;
+const burningCount = 0;
+const burnedCount = 0;
+const extinguished = 0;
 
 
 // Add event listener for the F key
@@ -248,7 +250,9 @@ document.addEventListener('keydown', (event) => {
                 vedro = false;
                 burning[closestFire] = false;
                 gori(false, centers[closestFire], fires[closestFire]);
-                console.log('Bucket emptied');
+                burningCount--;
+                extinguished++;
+                console.log('Fire extinguished:', centers[closestFire]);
             } else {
                 console.log('No fire nearby');
             }
@@ -324,11 +328,11 @@ function update(time, dt) {
                 jePozgano(true, centers[i], trees[i], burned[i], fires[i]);
                 burnTimer[i] = 0;
                 burnedTrees[i] = true;
+                burningCount--;
+                burnedCount++;
             }
         }
     }
-
-    allBurned = burnedTrees.reduce((acc, value) => acc + value, 0) === 5;
 
     // Increment the fire timer
     if (burning.reduce((acc, value) => acc + value, 0) < 5){
@@ -344,6 +348,7 @@ function update(time, dt) {
                     if (!burning[randomIndex]){
                         console.log('Found non-burning tree:', randomIndex);
                         burning[randomIndex] = true;
+                        burningCount++;
                         break;
                     }
                     else {
