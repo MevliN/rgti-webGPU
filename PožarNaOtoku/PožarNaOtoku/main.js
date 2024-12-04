@@ -318,12 +318,16 @@ function update(time, dt) {
             while (true) {
                 randomIndex = Math.floor(Math.random() * burning.length);
                 if (!burning[randomIndex]){
+                    console.log('Found non-burning tree:', randomIndex);
                     burning[randomIndex] = true;
                     break;
                 }
+                else {
+                    console.log('Tree already burning:', randomIndex);
+                }
             }
             gori(true, centers[randomIndex], fires[randomIndex]);
-            console.log('Fire spawned at', centers[randomIndex]);
+            console.log('Fire', fires[randomIndex], 'spawned at', centers[randomIndex]);
             fireTimer = 0; // Reset the timer
         }
     }
