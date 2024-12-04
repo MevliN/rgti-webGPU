@@ -339,14 +339,14 @@ function update(time, dt) {
     }
 
     // Increment the fire timer
-    if (burning.reduce((acc, value) => acc + value, 0) < 5){
+    if (burningCount < 5 && burnedCount < 5){
         fireTimer += dt;
 
         // Call gori every 30 seconds to spawn a fire
         // Because we have minutes and I needed to check that
         if (fireTimer >= 30) {
             let randomIndex = -1;
-            while (true && burnedCount < 5) {
+            while (true) {
                 randomIndex = Math.floor(Math.random() * burning.length);
                 if (!burnedTrees[randomIndex]){ 
                     if (!burning[randomIndex]){
