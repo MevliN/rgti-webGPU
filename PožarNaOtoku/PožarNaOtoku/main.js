@@ -197,9 +197,9 @@ const burning = [false, false, false, false, false];
 const burnedTrees = [false, false, false, false, false];
 const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
-const burningCount = 0;
-const burnedCount = 0;
-const extinguished = 0;
+var burningCount = 0;
+var burnedCount = 0;
+var extinguished = 0;
 
 
 // Add event listener for the F key
@@ -250,9 +250,11 @@ document.addEventListener('keydown', (event) => {
                 vedro = false;
                 burning[closestFire] = false;
                 gori(false, centers[closestFire], fires[closestFire]);
-                burningCount--;
-                extinguished++;
                 console.log('Fire extinguished:', centers[closestFire]);
+                burningCount--;
+                console.log('Burning trees:', burningCount);
+                extinguished++;
+                console.log('Extinguished fires:', extinguished);
             } else {
                 console.log('No fire nearby');
             }
@@ -329,7 +331,9 @@ function update(time, dt) {
                 burnTimer[i] = 0;
                 burnedTrees[i] = true;
                 burningCount--;
+                console.log('Tree burned down:', centers[i]);
                 burnedCount++;
+                console.log('Burned trees:', burnedCount);
             }
         }
     }
@@ -349,6 +353,7 @@ function update(time, dt) {
                         console.log('Found non-burning tree:', randomIndex);
                         burning[randomIndex] = true;
                         burningCount++;
+                        console.log('Burning trees:', burningCount);
                         break;
                     }
                     else {
