@@ -122,8 +122,8 @@ await loader.load('Scene/Island.gltf');
 
 const scene = loader.loadScene(loader.defaultScene);
 
-const camera = scene.children[0];
-const person = scene.children[20];
+const camera = loader.loadNode("Camera");
+const person = loader.loadNode("Oseba");
 person.isDynamic = true;
 person.aabb = {
     min: [-0.5, 0, -0.5],
@@ -132,6 +132,9 @@ person.aabb = {
 
 person.addComponent(new CharacterController(person, canvas));
 camera.addComponent(new FirstPersonController(camera, canvas));
+
+loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Desno'));
+loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Levo'));
 
 const physics = new Physics(scene);
 scene.traverse(node => {
@@ -268,6 +271,13 @@ let fireTimer = 25;
 
 let t = 0;
 
+// for walk animation
+let prevPlayerPosition = 0;
+let left = false;
+let animationTimer = 0;
+let animationDelay = 0.5;
+let movementThreshold = 0.001;
+
 function update(time, dt) {
     scene.traverse(node => {
         for (const component of node.components) {
@@ -380,29 +390,58 @@ function update(time, dt) {
     // Update the count down every time the tree burns down
     var x = setInterval(function() {
 
-        // Get amount of live trees
-        var counter = centers.length;
-
-        // Find the distance between all trees and alive at the moment
-        var distance = all - counter;
-
         // Display the result in the element with id="demo"
         var minutes = Math.trunc(t / 60);
         var seconds = Math.trunc(t % 60);
         
         if (minutes > 0) {
-            document.getElementById("demo").innerHTML = counter + " / " + all + " Time: " + minutes + "m " + seconds + "s";
+            document.getElementById("demo").innerHTML = "Burning: " + burningCount + " / " + all + " Extinguished: " + extinguished + " / 10 " + "Time: " + minutes + "m " + seconds + "s";
         }
         else {
-            document.getElementById("demo").innerHTML = counter + " / " + all + " Time: " + seconds + "s";
+            document.getElementById("demo").innerHTML = "Burning: " + burningCount + " / " + all + " Extinguished: " + extinguished + " / 10 " + " Time: " + seconds + "s";
         }
         
         // If the count down is finished, write some text
-        if (distance == all) {
+        if (burnedCount == all) {
             clearInterval(x);
             document.getElementById("demo").innerHTML = "Game Over";
         }
+        else if (extinguished == 10) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "You Win!";
+        }
     }, 1000);
+
+    // Walk animation
+    animationTimer += dt;
+    const movementDelta = vec3.distance(playerPosition, prevPlayerPosition);
+
+    if (movementDelta < movementThreshold) {
+        // Stop walking animation and switch to standing
+        if (!loader.loadNode('Oseba').children.includes(loader.loadNode('Oseba.Stoji'))) {
+            loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Desno'));
+            loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Levo'));
+            loader.loadNode('Oseba').addChild(loader.loadNode('Oseba.Stoji'));
+        }
+    } else {
+        // Animate walking at a slower pace
+        if (animationTimer >= animationDelay) {
+            animationTimer = 0; // Reset the timer for the next animation frame
+            if (left) {
+                loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Stoji'));
+                loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Levo'));
+                loader.loadNode('Oseba').addChild(loader.loadNode('Oseba.Desno'));
+                left = false;
+            } else {
+                loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Stoji'));
+                loader.loadNode('Oseba').removeChild(loader.loadNode('Oseba.Desno'));
+                loader.loadNode('Oseba').addChild(loader.loadNode('Oseba.Levo'));
+                left = true;
+            }
+        }
+    }
+
+    prevPlayerPosition = playerPosition;
 }
 
 
