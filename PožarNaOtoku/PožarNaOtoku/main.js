@@ -189,42 +189,44 @@ scene.addChild(light);
 
 var vedro = false;
 
+const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
+const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
+const burning = [false, false, false, false, false];
+const distances = [1000, 1000, 1000, 1000, 1000];
+
 // Add event listener for the F key
 document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyF') {
         const playerPosition = person.components[0].translation;
-        let nearFire = false;
-        
+
         let closestFire = null;
         let minDistance = 1000;
         let edgeDist = 90;
-        let fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
-        let centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
 
-        scene.traverse(node => {
-            for(let i = 0; i < 5; i++) {
-                if (!loader.loadNode(fires[i])) {
-                    continue;
-                }
-                node = loader.loadNode(fires[i]);
-                var translation = node.getComponentOfType(Transform).translation
-                const dx = translation[0] - playerPosition[0];
-                const dy = translation[1] - playerPosition[1];
-                const dz = translation[2] - playerPosition[2];
-                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestFire = i;
-                }
+        for(let i = 0; i < 5; i++) {
+            if (!loader.loadNode(fires[i])) {
+                distances[i] = 1000;
+                continue;
             }
-        });
+            else {
+                // Calculate the distance between the player and the fire
+                const firePosition = loader.loadNode(centers[i]).components[0].translation;
+                const distance = vec3.distance(playerPosition, firePosition);
+                distances[i] = distance;
+            }
+        }
+
+        // Find the closest fire
+        for (let i = 0; i < 5; i++) {
+            if (distances[i] < minDistance) {
+                minDistance = distances[i];
+                closestFire = i;
+            }
+        }
+
+        let nearFire = minDistance < 30;
 
         console.log('Closest fire:', centers[closestFire], 'Distance:', minDistance);
-
-        if (minDistance < 30) {
-            nearFire = true;
-        }
 
         // Check if the player is near the edge of the main platform
         if (!vedro) {
@@ -238,6 +240,7 @@ document.addEventListener('keydown', (event) => {
         else {
             if (nearFire && !(playerPosition[0] > edgeDist || playerPosition[0] < -edgeDist || playerPosition[2] > edgeDist || playerPosition[2] < -edgeDist)) {
                 vedro = false;
+                burning[closestFire] = false;
                 gori(false, centers[closestFire], fires[closestFire]);
                 console.log('Bucket emptied');
             } else {
@@ -247,9 +250,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
-const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
-let burning = [false, false, false, false, false];
+
 let fireTimer = 25;
 //let firstFire = true;
 
