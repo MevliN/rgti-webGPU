@@ -190,9 +190,13 @@ scene.addChild(light);
 var vedro = false;
 
 const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004'];
+const trees = ['ZivoDrevo', 'ZivoDrevo.001', 'ZivoDrevo.002', 'ZivoDrevo.003', 'ZivoDrevo.004'];
+const burned = ['PozganoDrevo', 'PozganoDrevo.001', 'PozganoDrevo.002', 'PozganoDrevo.003', 'PozganoDrevo.004'];
 const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
 const burning = [false, false, false, false, false];
+const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
+const burnedCount = 0;
 
 // Add event listener for the F key
 document.addEventListener('keydown', (event) => {
@@ -308,6 +312,20 @@ function update(time, dt) {
     }
     */
     
+    // Check if the tree is burning
+    for (let i = 0; i < 5; i++) {
+        if (burning[i]) {
+            burnTimer[i] += dt;
+            if (burnTimer[i] >= 30) {
+                burning[i] = false;
+                gori(false, centers[i], fires[i]);
+                jePozgano(true, centers[i], trees[i], burned[i], fires[i]);
+                burnTimer[i] = 0;
+                burnedCount++;
+            }
+        }
+    }
+
     // Increment the fire timer
     if (burning.reduce((acc, value) => acc + value, 0) < 5){
         fireTimer += dt;
@@ -318,13 +336,18 @@ function update(time, dt) {
             let randomIndex = -1;
             while (true) {
                 randomIndex = Math.floor(Math.random() * burning.length);
-                if (!burning[randomIndex]){
-                    console.log('Found non-burning tree:', randomIndex);
-                    burning[randomIndex] = true;
-                    break;
+                if (!loader.loadNode(burned[randomIndex])) {
+                    if (!burning[randomIndex]){
+                        console.log('Found non-burning tree:', randomIndex);
+                        burning[randomIndex] = true;
+                        break;
+                    }
+                    else {
+                        console.log('Tree already burning:', randomIndex);
+                    }
                 }
                 else {
-                    console.log('Tree already burning:', randomIndex);
+                    console.log('Tree already burned:', randomIndex);
                 }
             }
             gori(true, centers[randomIndex], fires[randomIndex]);
