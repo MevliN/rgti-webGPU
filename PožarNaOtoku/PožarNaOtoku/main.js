@@ -196,11 +196,11 @@ const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004
 const trees = ['ZivoDrevo', 'ZivoDrevo.001', 'ZivoDrevo.002', 'ZivoDrevo.003', 'ZivoDrevo.004'];
 const burned = ['PozganoDrevo', 'PozganoDrevo.001', 'PozganoDrevo.002', 'PozganoDrevo.003', 'PozganoDrevo.004'];
 const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
-const  = [false, false, false, false, false];
+const burning = [false, false, false, false, false];
 const burnedTrees = [false, false, false, false, false];
 const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
-var Count = 0;
+var burningCount = 0;
 var burnedCount = 0;
 var extinguished = 0;
 
@@ -251,11 +251,11 @@ document.addEventListener('keydown', (event) => {
         else {
             if (nearFire && !(playerPosition[0] > edgeDist || playerPosition[0] < -edgeDist || playerPosition[2] > edgeDist || playerPosition[2] < -edgeDist)) {
                 vedro = false;
-                [closestFire] = false;
+                burning[closestFire] = false;
                 gori(false, centers[closestFire], fires[closestFire]);
                 console.log('Fire extinguished:', centers[closestFire]);
-                Count--;
-                console.log(' trees:', Count);
+                burningCount--;
+                console.log('Burning trees:', burningCount);
                 extinguished++;
                 console.log('Extinguished fires:', extinguished);
             } else {
@@ -330,17 +330,17 @@ function update(time, dt) {
     }
     */
     
-    // Check if the tree is 
+    // Check if the tree is burning
     for (let i = 0; i < 5; i++) {
-        if ([i]) {
+        if (burning[i]) {
             burnTimer[i] += dt;
             if (burnTimer[i] >= 20) {
-                [i] = false;
+                burning[i] = false;
                 gori(false, centers[i], fires[i]);
                 jePozgano(true, centers[i], trees[i], burned[i], fires[i]);
                 burnTimer[i] = 0;
                 burnedTrees[i] = true;
-                Count--;
+                burningCount--;
                 console.log('Tree burned down:', centers[i]);
                 burnedCount++;
                 console.log('Burned trees:', burnedCount);
@@ -349,7 +349,7 @@ function update(time, dt) {
     }
 
     // Increment the fire timer
-    if ((Count < 5 - burnedCount) && burnedCount < 5){
+    if ((burningCount < 5 - burnedCount) && burnedCount < 5){
         fireTimer += dt;
 
         // Call gori every 7 seconds to spawn a fire
@@ -357,17 +357,17 @@ function update(time, dt) {
         if (fireTimer >= 7) {
             let randomIndex = -1;
             while (true) {
-                randomIndex = Math.floor(Math.random() * .length);
+                randomIndex = Math.floor(Math.random() * burning.length);
                 if (!burnedTrees[randomIndex]){ 
-                    if (![randomIndex]){
-                        console.log('Found non- tree:', randomIndex);
-                        [randomIndex] = true;
-                        Count++;
-                        console.log(' trees:', Count);
+                    if (!burning[randomIndex]){
+                        console.log('Found non-burning tree:', randomIndex);
+                        burning[randomIndex] = true;
+                        burningCount++;
+                        console.log('Burning trees:', burningCount);
                         break;
                     }
                     else {
-                        console.log('Tree already :', randomIndex);
+                        console.log('Tree already burning:', randomIndex);
                     }
                 }
                 else {
