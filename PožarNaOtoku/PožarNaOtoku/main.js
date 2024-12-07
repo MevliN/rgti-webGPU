@@ -196,11 +196,11 @@ const centers = ['Center', 'Center.001', 'Center.002', 'Center.003', 'Center.004
 const trees = ['ZivoDrevo', 'ZivoDrevo.001', 'ZivoDrevo.002', 'ZivoDrevo.003', 'ZivoDrevo.004'];
 const burned = ['PozganoDrevo', 'PozganoDrevo.001', 'PozganoDrevo.002', 'PozganoDrevo.003', 'PozganoDrevo.004'];
 const fires = ['Ogenj', 'Ogenj.001', 'Ogenj.002', 'Ogenj.003', 'Ogenj.004'];
-const burning = [false, false, false, false, false];
+const  = [false, false, false, false, false];
 const burnedTrees = [false, false, false, false, false];
 const burnTimer = [0, 0, 0, 0, 0];
 const distances = [1000, 1000, 1000, 1000, 1000];
-var burningCount = 0;
+var Count = 0;
 var burnedCount = 0;
 var extinguished = 0;
 
@@ -251,11 +251,11 @@ document.addEventListener('keydown', (event) => {
         else {
             if (nearFire && !(playerPosition[0] > edgeDist || playerPosition[0] < -edgeDist || playerPosition[2] > edgeDist || playerPosition[2] < -edgeDist)) {
                 vedro = false;
-                burning[closestFire] = false;
+                [closestFire] = false;
                 gori(false, centers[closestFire], fires[closestFire]);
                 console.log('Fire extinguished:', centers[closestFire]);
-                burningCount--;
-                console.log('Burning trees:', burningCount);
+                Count--;
+                console.log(' trees:', Count);
                 extinguished++;
                 console.log('Extinguished fires:', extinguished);
             } else {
@@ -330,17 +330,17 @@ function update(time, dt) {
     }
     */
     
-    // Check if the tree is burning
+    // Check if the tree is 
     for (let i = 0; i < 5; i++) {
-        if (burning[i]) {
+        if ([i]) {
             burnTimer[i] += dt;
             if (burnTimer[i] >= 20) {
-                burning[i] = false;
+                [i] = false;
                 gori(false, centers[i], fires[i]);
                 jePozgano(true, centers[i], trees[i], burned[i], fires[i]);
                 burnTimer[i] = 0;
                 burnedTrees[i] = true;
-                burningCount--;
+                Count--;
                 console.log('Tree burned down:', centers[i]);
                 burnedCount++;
                 console.log('Burned trees:', burnedCount);
@@ -349,7 +349,7 @@ function update(time, dt) {
     }
 
     // Increment the fire timer
-    if ((burningCount < 5 - burnedCount) && burnedCount < 5){
+    if ((Count < 5 - burnedCount) && burnedCount < 5){
         fireTimer += dt;
 
         // Call gori every 7 seconds to spawn a fire
@@ -357,17 +357,17 @@ function update(time, dt) {
         if (fireTimer >= 7) {
             let randomIndex = -1;
             while (true) {
-                randomIndex = Math.floor(Math.random() * burning.length);
+                randomIndex = Math.floor(Math.random() * .length);
                 if (!burnedTrees[randomIndex]){ 
-                    if (!burning[randomIndex]){
-                        console.log('Found non-burning tree:', randomIndex);
-                        burning[randomIndex] = true;
-                        burningCount++;
-                        console.log('Burning trees:', burningCount);
+                    if (![randomIndex]){
+                        console.log('Found non- tree:', randomIndex);
+                        [randomIndex] = true;
+                        Count++;
+                        console.log(' trees:', Count);
                         break;
                     }
                     else {
-                        console.log('Tree already burning:', randomIndex);
+                        console.log('Tree already :', randomIndex);
                     }
                 }
                 else {
@@ -395,10 +395,10 @@ function update(time, dt) {
         var seconds = Math.trunc(t % 60);
         
         if (minutes > 0) {
-            document.getElementById("demo").innerHTML = "Burning: " + burningCount + " / " + all + " Extinguished: " + extinguished + " / 10 " + "Time: " + minutes + "m " + seconds + "s";
+            document.getElementById("demo").innerHTML = "Burned: " + burnedCount + " / " + all + " Extinguished: " + extinguished + " / 10 " + "Time: " + minutes + "m " + seconds + "s";
         }
         else {
-            document.getElementById("demo").innerHTML = "Burning: " + burningCount + " / " + all + " Extinguished: " + extinguished + " / 10 " + " Time: " + seconds + "s";
+            document.getElementById("demo").innerHTML = "Burned: " + burnedCount + " / " + all + " Extinguished: " + extinguished + " / 10 " + " Time: " + seconds + "s";
         }
         
         // If the count down is finished, write some text
